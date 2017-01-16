@@ -94,7 +94,6 @@ prevprime (mpz_ptr p, mpz_srcptr n)
 		 division-free reductions.  Alternatively, table primes[]'s
 		 inverses (mod 2^16).  */
 	      r = (moduli[i] + incr) % prime;
-              printf("%ld %ld %u\n", prime, incr, r);
 	      prime += primegap[i];
 
 	      if (r == 0)
@@ -104,7 +103,7 @@ prevprime (mpz_ptr p, mpz_srcptr n)
 	  difference = 0;
 
 	  /* Miller-Rabin test */
-	  if (aux)
+	  if (mpz_probab_prime_p(p, 25))
 	    return;
 	next:;
 	  incr -= 2;
@@ -123,12 +122,33 @@ void get_primegap(mpz_ptr g, mpz_srcptr n) {
   mpz_clear(prev);
 }
 
+gmp_randstate_t state;
+int get_input(mpz_t n) {
+  mpz_t size, aux;
+  mpz_init(size);
+  mpz_init_set_ui(aux, 90);
+  mpz_urandomm(size, state, aux);
+  mpz_add_ui(size, size, 10);
+  mpz_urandomb(n, state, mpz_get_ui(size));
+  mpz_set_ui(aux, 2);
+  mpz_pow_ui(size, aux, mpz_get_ui(size));
+  mpz_add(n, n, size);
+  mpz_urandomm(aux, state, n);
+  if (mpz_cmp(aux, size) > 0)
+    return get_input(n);
+  //mpz_inp_str(n, stdin, 10);
+  return 1;
+}
+
 void main() {
   mpz_t n, gap;
+  gmp_randinit_default(state);
   mpz_init(n);
   mpz_init(gap);
-  while (mpz_inp_str(n, stdin, 10)) {
+  while (get_input(n)) {
     get_primegap(gap, n);
+    mpz_out_str(stdout, 10, n);
+    printf(" ");
     mpz_out_str(stdout, 10, gap);
     printf("\n");
   }
