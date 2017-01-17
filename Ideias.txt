@@ -1,0 +1,27 @@
+Available variables: Prime number, gap between prime number given a random number.
+
+Ideas of other variables to put as variable:
+- The 2 prime numbers chosen given the random number
+
+Hypothesis:
+- (1) On average, the larger the number, the larger the gap (we need to be carefull about this one especially because of the waiting for bus problem)
+
+Diferent types of graphs:
+- Histograms
+- Strip Carts (with real values and then the linear approximation/regression or gam said in R)
+- Box Plots
+- Scatter Plots (relasionship between 2 sets of numbers)
+- Normal QQ Plots (normally distributed ? yes or no)
+- Density plots
+
+Ideas of what to do:
+- Have a sample of at least 1000 numbers
+- Mean value for gaps between prime numbers
+- Median value for gap between prime numbers
+- Variance and standard deviation for gap between prime numbers
+- Box Plot to see what is the most common gap value out of all the gap values
+- Box Plot where you would divide the random number values in section and have a Box Plot for each section to confirm or reject hypothesis (1)
+- Density Plot to see the distribution of gap values
+- Scatter Plot to see the relashionship between the prime numbers and the gap (not sure how we do this because these are 3 variables and not 2, maybe another plot is better for this, or maybe we use the random number and the gap instead of the 2 prime numbers and the gap)
+- Normal QQ Plots to see wether we generated our data correctly
+
