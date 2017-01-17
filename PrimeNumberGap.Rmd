@@ -30,7 +30,9 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ```{r}
-plot = ggplot(data= dataset, aes(factor(dataset$Scholarity), log(dataset$norm_avg_salary))) +
-  geom_boxplot() + labs(x = "scholarity (years)", y = "log(normalized avg salary)") 
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$V1, g=15))
+plot = ggplot(data= primeAux, aes(factor(group), prime$V2)) +
+  geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
 ```
