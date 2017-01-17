@@ -7,7 +7,12 @@ library(reshape2)
 library(Hmisc)
 
 # Opening files
-prime = read.csv("data/primeNumber.csv", header = FALSE, sep = " ");
+  #Cleaning previously generated data
+  remove(prime)
+  remove(primeAux)
+  
+  #Reading and saving information in csv file
+  prime = read.csv("data/primeNumber.csv", header = FALSE, sep = " ");
 
 #Not a beautiful manner of removing the first useless column from the files
 #prime$CBO2002 = "prime"
