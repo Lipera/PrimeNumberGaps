@@ -29,10 +29,16 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+Box Plot for Hypothesis (1)
+
 ```{r}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$V1, g=15))
 plot = ggplot(data= primeAux, aes(factor(group), prime$V2)) +
   geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
+```
+```{r}
+smoothScatter(prime$V1,prime$V2,
+             xlab="Random Number",ylab="Prime Number Gap",main="Prime Number Gap Density")
 ```
