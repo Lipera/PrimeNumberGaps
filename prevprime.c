@@ -113,27 +113,27 @@ prevprime (mpz_ptr p, mpz_srcptr n)
     }
 }
 
-gmp_randstate_t state;
-int get_input(mpz_t n) {
+void get_log_random(mpz_t n, int maxbits, gmp_randstate_t state) {
   mpz_t size, aux;
   mpz_init(size);
-  mpz_init_set_ui(aux, 90);
-  mpz_urandomm(size, state, aux);
-  mpz_add_ui(size, size, 10);
-  mpz_urandomb(n, state, mpz_get_ui(size));
-  mpz_set_ui(aux, 2);
-  mpz_pow_ui(size, aux, mpz_get_ui(size));
-  mpz_add(n, n, size);
-  mpz_urandomm(aux, state, n);
-  if (mpz_cmp(aux, size) > 0)
-    return get_input(n);
-  //mpz_inp_str(n, stdin, 10);
-  return 1;
+  mpz_init(aux);
+  do {
+    mpz_set_ui(aux, maxbits-10);
+    mpz_urandomm(size, state, aux);
+    mpz_add_ui(size, size, 10);
+    mpz_urandomb(n, state, mpz_get_ui(size));
+    mpz_set_ui(aux, 2);
+    mpz_pow_ui(size, aux, mpz_get_ui(size));
+    mpz_add(n, n, size);
+    mpz_urandomm(aux, state, n);
+  } while (mpz_cmp(aux, size) > 0);
 }
 
 void main() {
   mpz_t n, prev, next, gap, nextnext, nextgap;
+  gmp_randstate_t state;
   gmp_randinit_default(state);
+  // TODO: gmp_randseed_ui(state, seed);
   mpz_init(n);
   mpz_init(prev);
   mpz_init(next);
@@ -141,7 +141,8 @@ void main() {
   mpz_init(nextnext);
   mpz_init(nextgap);
 
-  while (get_input(n)) {
+  while (1) {
+    get_log_random(n, 100, state);
     prevprime(prev, n);
     mpz_nextprime(next, n);
     mpz_nextprime(nextnext, next);
