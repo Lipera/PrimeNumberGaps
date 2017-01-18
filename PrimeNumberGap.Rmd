@@ -38,7 +38,8 @@ plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
   geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
 ```
-Density plot of the general distribution of the gaps between the prime numbers
+
+Density plot of the general distribution of the gaps between the prime numbers, usefull for hypothesis (2) since we have log(Random Number)
 ```{r}
 smoothScatter(log(prime$Input),prime$PrimeGap,
              xlab="log(Random Number)",ylab="Prime Number Gap",main="Prime Number Gap Density")
@@ -64,10 +65,10 @@ meanPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$Input)) +
 meanPlot
 ```
 
-Pseudo-random distribution log(n) for hypothesisRandom Number
+Pseudo-random distribution log(n) for hypothesis Random Number (2)
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
-  geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth()
+  geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth(method = "lm")
 lnPlot
 ```
 
@@ -78,7 +79,7 @@ plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
 plot
 ```
 
-Scatter Plot of correlation between consecutive gaps (As the graph show not much correlation)
+Scatter Plot of correlation between consecutive gaps, for Hypothesis (3) (As the graph show not much correlation)
 ```{r}
 lnPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$NextGap)) + 
   geom_point() + labs(x = "Current Gap", y = "Next Gap") + geom_smooth()
