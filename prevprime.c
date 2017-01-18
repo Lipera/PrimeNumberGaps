@@ -113,15 +113,6 @@ prevprime (mpz_ptr p, mpz_srcptr n)
     }
 }
 
-void get_primegap(mpz_ptr g, mpz_srcptr n) {
-  mpz_t prev;
-  mpz_init(prev);
-  mpz_nextprime(g, n);
-  prevprime(prev, n);
-  mpz_sub(g, g, prev);
-  mpz_clear(prev);
-}
-
 gmp_randstate_t state;
 int get_input(mpz_t n) {
   mpz_t size, aux;
@@ -141,14 +132,24 @@ int get_input(mpz_t n) {
 }
 
 void main() {
-  mpz_t n, gap;
+  mpz_t n, prev, next, gap;
   gmp_randinit_default(state);
   mpz_init(n);
+  mpz_init(prev);
+  mpz_init(next);
   mpz_init(gap);
+
   while (get_input(n)) {
-    get_primegap(gap, n);
+    prevprime(prev, n);
+    mpz_nextprime(next, n);
+    mpz_sub(gap, next, prev);
+
     mpz_out_str(stdout, 10, n);
-    printf(" ");
+    printf(",");
+    mpz_out_str(stdout, 10, prev);
+    printf(",");
+    mpz_out_str(stdout, 10, next);
+    printf(",");
     mpz_out_str(stdout, 10, gap);
     printf("\n");
   }
