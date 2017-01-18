@@ -38,7 +38,24 @@ plot = ggplot(data= primeAux, aes(factor(group), prime$V2)) +
   geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
 ```
+Density plot of the general distribution of the gaps between the prime numbers
 ```{r}
 smoothScatter(prime$V1,prime$V2,
              xlab="Random Number",ylab="Prime Number Gap",main="Prime Number Gap Density")
+```
+
+```{r}
+meanE <- mean(prime$V2)
+std <- sd(prime$V2)
+meanPlot <- ggplot(data= prime, aes(prime$V2, prime$V1)) + 
+  geom_point() + labs(x = "Prime Number Gap", y = "Random Number") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(prime$V2), 
+                 colour = "median"), linetype = "dashed") + 
+  scale_colour_manual(name = "Legend", 
+                      breaks = c("mean", "std","median"), 
+                      values= c(mean = "red", std = "blue", median = "orange"))
+meanPlot
 ```
