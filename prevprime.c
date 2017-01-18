@@ -132,17 +132,21 @@ int get_input(mpz_t n) {
 }
 
 void main() {
-  mpz_t n, prev, next, gap;
+  mpz_t n, prev, next, gap, nextnext, nextgap;
   gmp_randinit_default(state);
   mpz_init(n);
   mpz_init(prev);
   mpz_init(next);
   mpz_init(gap);
+  mpz_init(nextnext);
+  mpz_init(nextgap);
 
   while (get_input(n)) {
     prevprime(prev, n);
     mpz_nextprime(next, n);
+    mpz_nextprime(nextnext, next);
     mpz_sub(gap, next, prev);
+    mpz_sub(nextgap, nextnext, next);
 
     mpz_out_str(stdout, 10, n);
     printf(",");
@@ -150,7 +154,11 @@ void main() {
     printf(",");
     mpz_out_str(stdout, 10, next);
     printf(",");
+    mpz_out_str(stdout, 10, nextnext);
+    printf(",");
     mpz_out_str(stdout, 10, gap);
+    printf(",");
+    mpz_out_str(stdout, 10, nextgap);
     printf("\n");
   }
 }
