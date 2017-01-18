@@ -54,9 +54,13 @@ meanPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$Input)) +
   geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
   geom_vline(aes(xintercept = median(prime$PrimeGap), 
                  colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(prime$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(prime$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
   scale_colour_manual(name = "Legend", 
-                      breaks = c("mean", "std","median"), 
-                      values= c(mean = "red", std = "blue", median = "orange"))
+                      breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                      values= c(mean = "red", std = "blue", median = "orange", quantile25 = "green", quantile75 = "yellow"))
 meanPlot
 ```
 
@@ -64,5 +68,19 @@ Pseudo-random distribution log(n) for hypothesisRandom Number
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
   geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth()
+lnPlot
+```
+
+Box Plot of overall average gap values
+```{r}
+plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
+  geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
+plot
+```
+
+Scatter Plot of correlation between consecutive gaps (As the graph show not much correlation)
+```{r}
+lnPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$NextGap)) + 
+  geom_point() + labs(x = "Current Gap", y = "Next Gap") + geom_smooth()
 lnPlot
 ```
