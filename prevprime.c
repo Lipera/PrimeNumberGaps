@@ -126,18 +126,26 @@ void get_log_random(mpz_t n, int maxbits, gmp_randstate_t state) {
   mpz_init(size);
   mpz_init(aux);
   do {
+    // size = random in [10, maxbits)
+    // 10 because prevprime doesn't work with smaller inputs
     mpz_set_ui(aux, maxbits-10);
     mpz_urandomm(size, state, aux);
     mpz_add_ui(size, size, 10);
+    // n = random in [2^size, 2^(size+1)); size = 2^size
     mpz_urandomb(n, state, mpz_get_ui(size));
     mpz_set_ui(aux, 2);
     mpz_pow_ui(size, aux, mpz_get_ui(size));
     mpz_add(n, n, size);
+    // accept with size/n chance
     mpz_urandomm(aux, state, n);
   } while (mpz_cmp(aux, size) > 0);
+  mpz_clear(size);
+  mpz_clear(aux);
 }
 
 void main() {
+  int maxbits=100, numsamples=-1, i;
+
   mpz_t n, prev, next, gap, nextnext, nextgap;
   gmp_randstate_t state;
   gmp_randinit_default(state);
@@ -150,8 +158,8 @@ void main() {
   mpz_init(nextgap);
 
   printf("Input,PreviousPrime,NextPrime,NextNextPrime,PrimeGap,NextGap");
-  while (1) {
-    get_log_random(n, 100, state);
+  for (i = 0; i != numsamples; ++i) {
+    get_log_random(n, maxbits, state);
     prevprime(prev, n);
     mpz_nextprime(next, n);
     mpz_nextprime(nextnext, next);
