@@ -16,6 +16,7 @@ library(Hmisc)
 
 #Not a beautiful manner of removing the first useless column from the files
 #prime$CBO2002 = "prime"
+prime["xOverlnx"] = prime$Input / log(prime$Input)
 
 #Saving data to access from the R markdown
 save(prime, file = "data/primeNumber.Rdata")
