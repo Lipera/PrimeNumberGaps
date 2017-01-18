@@ -60,9 +60,9 @@ meanPlot <- ggplot(data= prime, aes(prime$V2, prime$V1)) +
 meanPlot
 ```
 
-Pseudo-random distribution log(n) for hypothesis 2
+Pseudo-random distribution log(n) for hypothesisRandom Number
 ```{r}
-lnPlot <- ggplot(data= prime, aes(prime$V1, log(prime$V2))) + 
+lnPlot <- ggplot(data= prime, aes(log(prime$V1), prime$V2)) + 
   geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth()
 lnPlot
 ```
