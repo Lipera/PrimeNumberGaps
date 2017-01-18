@@ -33,26 +33,26 @@ Box Plot for Hypothesis (1)
 
 ```{r}
 primeAux <- prime
-primeAux$group <- as.numeric(cut2(primeAux$V1, g=15))
-plot = ggplot(data= primeAux, aes(factor(group), prime$V2)) +
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
   geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
 ```
 Density plot of the general distribution of the gaps between the prime numbers
 ```{r}
-smoothScatter(prime$V1,prime$V2,
-             xlab="Random Number",ylab="Prime Number Gap",main="Prime Number Gap Density")
+smoothScatter(log(prime$Input),prime$PrimeGap,
+             xlab="log(Random Number)",ylab="Prime Number Gap",main="Prime Number Gap Density")
 ```
 
 ```{r}
-meanE <- mean(prime$V2)
-std <- sd(prime$V2)
-meanPlot <- ggplot(data= prime, aes(prime$V2, prime$V1)) + 
+meanE <- mean(prime$PrimeGap)
+std <- sd(prime$PrimeGap)
+meanPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$Input)) + 
   geom_point() + labs(x = "Prime Number Gap", y = "Random Number") +
   geom_vline(aes(xintercept = meanE, colour = "mean")) + 
   geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
   geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
-  geom_vline(aes(xintercept = median(prime$V2), 
+  geom_vline(aes(xintercept = median(prime$PrimeGap), 
                  colour = "median"), linetype = "dashed") + 
   scale_colour_manual(name = "Legend", 
                       breaks = c("mean", "std","median"), 
@@ -62,7 +62,7 @@ meanPlot
 
 Pseudo-random distribution log(n) for hypothesisRandom Number
 ```{r}
-lnPlot <- ggplot(data= prime, aes(log(prime$V1), prime$V2)) + 
+lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
   geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth()
 lnPlot
 ```

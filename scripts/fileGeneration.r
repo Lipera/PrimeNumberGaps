@@ -12,7 +12,7 @@ library(Hmisc)
   remove(primeAux)
   
   #Reading and saving information in csv file
-  prime = read.csv("data/primeNumber.csv", header = FALSE, sep = " ");
+  prime = read.csv("data/dataPrimes.csv", header = TRUE);
 
 #Not a beautiful manner of removing the first useless column from the files
 #prime$CBO2002 = "prime"
