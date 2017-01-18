@@ -84,3 +84,24 @@ lnPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$NextGap)) +
   geom_point() + labs(x = "Current Gap", y = "Next Gap") + geom_smooth()
 lnPlot
 ```
+
+Histogram with distribution of different gaps
+```{r}
+plotHist = ggplot(data = prime, aes(prime$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(prime$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(prime$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(prime$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
