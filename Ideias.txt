@@ -33,4 +33,5 @@ Ideas of what to do:
 - Correct data due to Waiting Paradox
     Solution: give a weight of 1/gap to each observation, like would be done if multiple identical observations were made, but with a fractional number
 - Use logarithmic axis for the input
-- Plot percentile lines (not sure if there's a better name for that)
+✔ - Plot percentile lines (not sure if there's a better name for that)
+- Histogram of the number gaps of each kind of gap
