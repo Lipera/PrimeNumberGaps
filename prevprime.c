@@ -1,3 +1,6 @@
+// This is a copy of the GMP lib implementaion for mpz_nextprime
+// Adaped to compute the previous prime instead
+
 /* mpz_nextprime(p,t) - compute the next prime > t and store that in p.
 
 Copyright 1999-2001, 2008, 2009, 2012 Free Software Foundation, Inc.
@@ -45,6 +48,8 @@ static const unsigned char primegap[] =
 
 #define NUMBER_OF_PRIMES 167
 
+// FIXME: doesn't work for n < 1013
+// TODO: if n is prime, i is returning p=n
 void
 prevprime (mpz_ptr p, mpz_srcptr n)
 {
@@ -113,6 +118,9 @@ prevprime (mpz_ptr p, mpz_srcptr n)
     }
 }
 
+
+
+// Generate a random number uniformly in the log scale
 void get_log_random(mpz_t n, int maxbits, gmp_randstate_t state) {
   mpz_t size, aux;
   mpz_init(size);
@@ -141,6 +149,7 @@ void main() {
   mpz_init(nextnext);
   mpz_init(nextgap);
 
+  printf("Input,PreviousPrime,NextPrime,NextNextPrime,PrimeGap,NextGap");
   while (1) {
     get_log_random(n, 100, state);
     prevprime(prev, n);
