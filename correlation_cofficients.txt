@@ -1,0 +1,16 @@
+One of the hypothesis says that there is no correlation between consecutive
+prime gaps. We can use Pearson correlation coefficient to check the linear
+correlation between consecutive gaps. R provides a function to calculate the
+linear correlation, cor(). It takes two vectors as inputs and returns a value
+of linear correlation. The value of correlation coefficient varies between 0
+and 1. The 0 value means that there is no correlation and 1 is otherwise. We 
+input first and second prime gaps as first and second vectors, respectively.
+The return value (i.e. 0.24 as shown in graph) is equal to zero because of the
+following reason.
+
+We found a plausible explanation for this fact in that we have larger gaps if
+the input is larger. That means that if the first gap is larger, the next gap
+has a higher probability of being relatively large too. Considering this,
+indeed we should expect some correlation. However, we could perform a separate
+experiment without this bias, by considering only similar inputs. But it was
+limited by time constraint.
