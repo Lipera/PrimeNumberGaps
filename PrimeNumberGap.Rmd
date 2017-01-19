@@ -79,7 +79,7 @@ plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
 plot
 ```
 
-This seems to confirm what we deduced from the previous graph. Having drawn the box plot for the whole dataset, we then divided the latter into 15 equaly distributed groups in terms of inputs values. Next, for each different group we drew a box plot similar to the one of the previous graph in order to confirm or reject hypothesis (1).
+This seems to be consistent with the previous graph. Having drawn the box plot for the whole dataset, we then divided the latter into 15 equaly distributed groups in terms of inputs values. Next, for each different group we drew a box plot similar to the one of the previous graph in order to confirm or reject hypothesis (1).
 
 ```{r}
 primeAux <- prime
@@ -89,9 +89,9 @@ plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
 plot
 ```
 
-As you can see, the value of the average seems to increase as we increase the group number, meaning that we go into groups with larger numbers, the gap average increases. As such, we can confirm hypothesis (1) as true.
+As you can see, the value of the average seems to increase as we increase the group number, meaning that as we go into groups with larger numbers, the gap average increases. As such, we can confirm hypothesis (1) as true.
 
-At that point, we started wondering if about the gap values followed a logarithmic distribution. We started by ploting the $log(Input)$ against the prime number gap.
+At that point, we started wondering if the gap values followed a logarithmic distribution. We started by ploting the $log(Input)$ against the prime number gap.
 
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
@@ -99,11 +99,11 @@ lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) +
 lnPlot
 ```
 
-For redundancy and to validate our data generation we ploted $log(Input)$ against the next prime number gap of the current input.
+For redundancy reasons and to validate our data generation we ploted $log(Input)$ against the next prime number gap of the current input.
 
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$NextGap)) + 
-  geom_point() + labs(x = "log(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
+  geom_point() + labs(x = "log(Input)", y = "Next Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
 ```
 
@@ -114,7 +114,7 @@ smoothScatter(log(prime$Input),prime$PrimeGap,
              xlab="log(Input)",ylab="Prime Number Gap",main="Prime Number Gap Density")
 ```
 
-The blue line in the first 2 graphs show the smooth local average of the different data points. Both graphs seem to indicate the logarithmic distribution to be true and the density plot seem also to indicate a more concetrated number of gap in the lower values. To confirm the information conveyed by the first 2 graphs, we drew a $4^{th}$ with the smooth conditional mean and the theoritical truth using the $\frac{log^2(x)}{log(x)-1}$ formula.
+The blue line in the first 2 graphs show the smooth local average of the different data points. Both graphs seem to indicate the logarithmic distribution to be true and the density plot seem also to indicate a more concetrated number of gap in the lower values. To confirm the information conveyed by the first 2 graphs, we drew a $4^{th}$ one with the smooth conditional mean and the theoritical truth using the $\frac{log^2(x)}{log(x)-1}$ formula.
 
 ```{r}
 meanE <- mean(prime$PrimeGap)
@@ -134,6 +134,21 @@ lnPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$NextGap)) +
   geom_point() + labs(x = "Current Gap", y = "Next Gap") + geom_smooth()
 lnPlot
 ```
+
+```{r}
+correlation <- cor.test(x<-prime$PrimeGap, y<-prime$NextGap, method = c("pearson"))
+cor_graph <- ggplot(data = prime, aes(prime$PrimeGap, prime$NextGap)) + 
+    geom_point() + labs(x = "Current Gap", y = "Next Gap") +
+    geom_smooth(method = "lm")
+cor_graph + ggtitle("Correlation between Current Gap and Next Gap") +
+          annotate("text", x = 350, y = 450, label = paste("Correlation:", correlation$estimate))
+```
+
+```{r}
+smoothScatter(prime$PrimeGap,prime$NextGap,
+                xlab="Current Gap",ylab="Next Gap",main="Current Gap and Next Gap density")
+```
+
 
 Histogram with distribution of different gaps
 ```{r}
@@ -301,19 +316,7 @@ plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
 plotHist
 ```
 
-```{r}
-correlation <- cor.test(x<-prime$PrimeGap, y<-prime$NextGap, method = c("pearson"))
-cor_graph <- ggplot(data = prime, aes(prime$PrimeGap, prime$NextGap)) + 
-    geom_point() + labs(x = "Current Gap", y = "Next Gap") +
-    geom_smooth(method = "lm")
-cor_graph + ggtitle("Correlation between Current Gap and Next Gap") +
-          annotate("text", x = 350, y = 450, label = paste("Correlation:", correlation$estimate))
-```
 
-```{r}
-smoothScatter(prime$PrimeGap,prime$NextGap,
-                xlab="Current Gap",ylab="Next Gap",main="Current Gap and Next Gap density")
-```
 
 ## References
 
