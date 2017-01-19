@@ -79,7 +79,7 @@ plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
 plot
 ```
 
-This seems to be consistent with the previous graph. Having drawn the box plot for the whole dataset, we then divided the latter into 15 equaly distributed groups in terms of inputs values. Next, for each different group we drew a box plot similar to the one of the previous graph in order to confirm or reject hypothesis (1).
+This seems to be consistent with the previous graph. Having drawn the box plot for the whole dataset, we then divided the latter into 15 equally distributed groups in terms of inputs values. Next, for each different group we drew a box plot similar to the one of the previous graph in order to confirm or reject hypothesis (1).
 
 ```{r}
 primeAux <- prime
@@ -128,12 +128,7 @@ plot
 
 As we excepted, the smooth conditional mean alligns perfectly with the theoritical truth, meaning that our hypothesis (2) is confirmed as well.
 
-Scatter Plot of correlation between consecutive gaps, for Hypothesis (3) (As the graph show not much correlation)
-```{r}
-lnPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$NextGap)) + 
-  geom_point() + labs(x = "Current Gap", y = "Next Gap") + geom_smooth()
-lnPlot
-```
+Another hypothesis says that there is no correlation between consecutive prime gaps. We can use Pearson correlation coefficient to check the linear correlation between consecutive gaps. R provides a function to calculate the linear correlation, $cor()$. It takes two vectors as inputs and returns a value of linear correlation. The value of correlation coefficient varies between 0 and 1. The 0 value means that there is no correlation and 1 is otherwise. We input first and second prime gaps as first and second vectors, respectively. The return value (i.e. 0.24 as shown in graph) is equal to zero because of the following reason.
 
 ```{r}
 correlation <- cor.test(x<-prime$PrimeGap, y<-prime$NextGap, method = c("pearson"))
@@ -149,8 +144,10 @@ smoothScatter(prime$PrimeGap,prime$NextGap,
                 xlab="Current Gap",ylab="Next Gap",main="Current Gap and Next Gap density")
 ```
 
+We found a plausible explanation for this fact in that we have larger gaps if the input is larger. That means that if the first gap is larger, the next gap has a higher probability of being relatively large too. Considering this, indeed we should expect some correlation. However, we could perform a separate experiment without this bias, by considering only similar inputs. But it was limited by time constraint. Hypothesis (4) is, thus, unconclusive due to lack of data.
 
-Histogram with distribution of different gaps
+Up until now, we analyzed the distrubtion of the gap values, but not their frequency. To do that, we ploted a histogram of each prime gap value in order to check their frequency throught the whole input dataset.
+
 ```{r}
 meanE <- mean(prime$PrimeGap)
 std <- sd(prime$PrimeGap)
@@ -173,7 +170,10 @@ plotHist = ggplot(data = prime, aes(prime$PrimeGap)) +
 plotHist
 ```
 
+As we can see, the most common the lower gap value seem to be the most frequent ones. However, we pondered about the local distribution of the gaps since the graph shown here shows for the whole dataset. Therefore, we divided, again, the input numbers into 15 equally distributed groups in terms of inputs values. For each group we drew a graph similar to the previous one. The code for each plot remains the same, except the $3^{rd}$ line where you replace the value of ``primeAux$group`` by the number of the group desired.
+
 Group 1
+
 ```{r}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
@@ -200,6 +200,7 @@ plotHist
 ```
 
 Group 2
+
 ```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
@@ -226,6 +227,7 @@ plotHist
 ```
 
 Group 6
+
 ```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
@@ -252,6 +254,7 @@ plotHist
 ```
 
 Group 10
+
 ```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
@@ -278,6 +281,7 @@ plotHist
 ```
 
 Group 15
+
 ```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
@@ -303,13 +307,108 @@ plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
 plotHist
 ```
 
-Evolution of a certain gap overtime (In this case the gap of value 2)
+The results shown are quite curious; the graph always presents a long tail shape, however for lower input values we have a very smal variety of gap values, whereas for higher inputs values, the contrary is true. 
+
+Nevertheless, even if we can conclude that lower gap values are more frequent, what would be the evolution of a specific gap value overtime? To do that, we not only divided, again, the input values into 15 equally distributed groups, but we also divided the gap values in very small groups. By fixing the gap group in ``primeAux$groupGap`` in the $3^{rd}$ line we obtain the following plots
+
+$Gap=2$
 
 ```{r}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
 primeAuxHist <- subset(primeAux, primeAux$groupGap == 1)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=4$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 2)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=6$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 3)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=8$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 4)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=20$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 10)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=40$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 20)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=90$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 45)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
+
+$Gap=[272;474]$
+
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 75)
 plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
   geom_bar(fill="white", colour="black") + 
       labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
