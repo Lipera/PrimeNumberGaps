@@ -30,7 +30,7 @@ Ideas of what to do:
 ✔ - Density Plot to see the distribution of gap values
 ✔ - Scatter Plot to see the relashionship between the prime numbers and the gap (not sure how we do this because these are 3 variables and not 2, maybe another plot is better for this, or maybe we use the random number and the gap instead of the 2 prime numbers and the gap)
 - Normal QQ Plots to see wether we generated our data correctly
-- Validate data with the Prime Number Theorem (says the number of primes, thus of gaps, up to n is approximately n/ln(n))
+✔ - Validate data with the Prime Number Theorem (says the number of primes, thus of gaps, up to n is approximately n/ln(n))
 ✔ - Correct data due to Waiting Paradox
     Solution: give a weight of 1/gap to each observation, like would be done if multiple identical observations were made, but with a fractional number
 ✔ - Use logarithmic axis for the input
