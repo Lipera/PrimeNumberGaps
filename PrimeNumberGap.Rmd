@@ -11,29 +11,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
 ## Motivation
 
-Prime numbers have been a mystery for centuries. Finding a pattern for these numbers has proven to be such a complex task that it has become the base of modern cryptography. To encode the data, people use 2 very large prime numbers, multiplying each other and then executing the remaining operations necessary to encode. In order to decode, the hacker would need to find the original primes that form the current number. However, no pattern has been found for prime numbers, making the task very difficult if the primes are relatively large. Nevertheless, a new pattern was discovered, which was shown to be related to the distribution of the differences between consecutive primes. These differences are called "prime gaps". The paper by Robert J. Lemke Oliver and Kannan Soundararajan demonstrates that the pattern is related to the Hardy-Littlewood conjecture, from 1923, which gives an approximation to that distribution.
+Prime numbers have been a mystery for centuries. Finding a pattern for these numbers has proven to be such a complex task that it has become the base of modern cryptography. To encode the data, people use 2 very large prime numbers, multiplying each other and then executing the remaining operations necessary to encode. In order to decode, the hacker would need to find the original primes that form the current number. However, no pattern has been found for prime numbers, making the task very difficult if the primes are relatively large. Nevertheless, a new pattern was discovered, which was shown to be related to the distribution of the differences between consecutive primes. These differences are called "prime gaps". The paper by Robert J. Lemke Oliver and Kannan Soundararajan [^1] demonstrates that the pattern is related to the Hardy-Littlewood conjecture [^2], from 1923, which gives an approximation to that distribution.
 
 Being a pseudo-random function, we thought it would be interesting to investigate this matter, analyzing with our own means while confirming or rejecting conjectures done by mathematicians. You can look at a pseudo-random function in 2 different ways:
 
@@ -42,36 +22,40 @@ Being a pseudo-random function, we thought it would be interesting to investigat
 
 We adopted the first approach.
 
-Considering the Prime Number Theory [^1] and 
+Since prime numbers are a very popular topic in pure mathematics, there are many theorems and conjectures involving them. The most important theorem for this work is the Prime Number Theorem [^3]: it says that the number of primes up to $x$, $\pi(x)$, tends to $\frac{x}{ln(x)}$, for $x$ large enough. Note that this number is also the number of prime gaps up to $x$, since each prime is followed by exactly one prime gap.
+Also, very important for this work is the Hardy-Littlewood conjecture, also called the k-tuples conjecture. It gives an estimation to the amount of prime constellations up to a number $x$. In particular, it says the amount of gaps of size $2k$ tends to $C(k) * \int_2^x \frac{1}{ln²(t)} \partial t.$.
+We thus formulated some hypothesis based on those two formulas:
 
-##Generation of data
+1. The Prime Number Theorem [^3] says that, over time, the frequency of prime numbers becomes lower. That would mean that the average prime gap becomes larger with a larger input.
+2. More specifically, if we have a prime gap from a to b, we have that $\pi(b)-\pi(a)=1$ and $b-a=gap$, so $\frac{\pi(b)-\pi(a)}{b-a} = \frac{1}{gap}$. The left side of that equation can be seen as similar to the derivative of $\pi(x)$. Since the Prime Number Theorem [^3] gives the approximation $\pi(x) \approx \frac{x}{ln(x)}$, we have that $\frac{1}{gap} \approx \frac{1}{ln(x)} - \frac{1}{ln²(x)}$.
+  But what is this $\frac{1}{gap}$? It is the average of $\frac{1}{gap}$ with the Waiting Paradox bias, or the inverse of the average of the gap with the bias correction. The first one is since considering $\frac{1}{gap}$ for each possible input between $a$ and $b$, we get sum equal to the number of gaps between $a$ and $b$, however since it is for each input we get more samples from larger gaps. The second one is due to that considering the gaps between $a$ and $b$, the sum of their lengths is $b-a$, and so their average is $\frac{b-a}{\pi(b)-\pi(a)}$.
+  That is, for inputs close to $x$, the average of the gaps should be approximately $\frac{1}{\frac{1}{ln(x)} - \frac{1}{ln²(x)}} = \frac{ln²(x)}{ln(x)-1} \approx ln(x)$.
+3. We can similarly make the hypothesis that other statistical measures, such as the median and quantiles, also scale proportionally to $ln(x)$.
+4. The Lemke Oliver and Soundarajan [^1] observation is that consecutive prime numbers have some correlation, so we decided to investigate if consecutive prime gaps are too. Our initial hypothesis is that there is not, since they are regarded as being very "random".
+5. Derivating the Hardy-Littlewood formula [^2], we get that the probability of a gap of size $2k$ is proportional to $\frac{C(k)}{ln²(x)}$. One hypothesis we can look into is that this is true, since the mathematical community strongly believes in the conjecture.
+6. We can also go beyond checking the average number of gaps of a given size, we can ask if they also behave randomly. One hypothesis is that they follow a Poisson distribution.
+ 
 
-Box Plot for Hypothesis (1)
+##Generation of the data
 
+In this project we worked with very large integers. This is necessary to provide significance to sublinear factors - factor smaller than n, such as $log(n)$.  To generate large integers we used the very popular GNU Multiple Precision library (GMP) with the C language. This library is used by Python, for example, to provide integers with arbitrary magnitude.  The library implements the Miller-Rabin probabilistic primality test [^4]. It uses it for a function called 'nextprime', that computes the smallest prime larger than the given input. By altering this function we can compute the 'previous prime'. The difference between these two primes is the prime gap surrounding the input. For example, if we take an input of value 4, we know that the previous prime of 4 is 3 and the next prime is 5. The difference (i.e. prime gap) between 3 and 5 is 2. This gap of 2 is surrounding the input of 4.
+
+Generating prime gaps in this way can have the issue of the (Bus) Waiting Paradox. This so-called paradox is mostly known from Poisson distributions, but may affect any other distribution if the sampling approach is similar. It seems contradictory that if buses arrive in a Poisson distribution and the average time between them is 15 minutes, then the average time you must wait in a bus stop is also 15 minutes, regardless of how long ago the previous bus left. The contradiction is that the average time since the last bus is also 15 minutes. This means you observe an average gap of 30 minutes. This is explained by the fact that it is more probable to arrive at the bus stop during a long gap. This is a bias approach towards longer gaps. As an example, if one gap is 10 minutes long and another is 20 then the average gap is 15 minutes.  However the average observed gap is 16 minutes and 40 seconds, since it is more probable for an observer to arrive during the longer gap.
+
+We solve this problem during generation by adding an extra step to it. In this step, if a gap is found with size of $2k$ then it is accepted only with $\frac{1}{k}$ probability. This is because each gap of size $2k$ has $2k$ possibilities of getting selected. By adding an inversely proportional weight to it, we correct this bias. This bias could also be solved by considering that the factor has an importance weight, where a weight of 2 would mean the same as having a second identical observation. However, altering the generation was much simpler for us, and does not significantly impact the amount of time needed to generate the data. The GMP library and C language are very fast, originally outputting thousands of samples each second, so rejecting a portion does not impact the significance of our analysis. Note that doing this changes the probability distribution of the input, since, as we could see with the rest of our work, larger inputs have larger gaps. This means that weighting larger gaps down, or rejecting them randomly, means weighting down larger inputs more than smaller ones. Thus, it is very important to keep this bias in mind, as now the number of samples is proportional to the number of gaps, not the size of the input. We also generate the next gap, to test the hypothesis that there is no correlation between consecutive prime gaps. To generate uniform random numbers for inputs we use the GMP library functions. We focused on generating input numbers in a logarithmic scale. This is to be able to notice the impact of sublinear factors. The generation could be done by first generating a uniformly random real number and then using it as exponent to a fixed base. However, with very large numbers this is hard to do due to concerns of precision.  We instead generate an integer exponent $n$, which gives a range of possible numbers, from $2^n$ to $2^{(n+1)}$. We have that the probability of choosing a number $x$ should be proportional to $log(x)-log(x-1) \approx \frac{1}{x}$, so we generate a uniformly random number in that range and accept it with $\frac{2^n}{x}$ chance.
+
+##Analysis of the data
+
+In a first instance, we made a graph displaying the general distribution of the gaps of the prime number throught the whole input dataset and the result is the following:
 ```{r}
 library(ggplot2)
 library(reshape2)
 library(Hmisc)
 load(file="data/primeNumber.Rdata")
-primeAux <- prime
-primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
-plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
-  geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
-plot
-```
-
-
-Density plot of the general distribution of the gaps between the prime numbers, usefull for hypothesis (2) since we have log(Random Number)
-```{r}
-smoothScatter(log(prime$Input),prime$PrimeGap,
-             xlab="log(Random Number)",ylab="Prime Number Gap",main="Prime Number Gap Density")
-```
-
-```{r}
 meanE <- mean(prime$PrimeGap)
 std <- sd(prime$PrimeGap)
 meanPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$Input)) + 
-  geom_point() + labs(x = "Prime Number Gap", y = "Random Number") +
+  geom_point() + labs(x = "Prime Number Gap", y = "Input") +
   geom_vline(aes(xintercept = meanE, colour = "mean")) + 
   geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
   geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
@@ -87,21 +71,51 @@ meanPlot <- ggplot(data= prime, aes(prime$PrimeGap, prime$Input)) +
 meanPlot
 ```
 
-Pseudo-random distribution log(n) for hypothesis Random Number (2)
+As you can see most of the gap values seem to be concentrated between 0 and 150. We then decided to draw a box plot with the overall average of the gap value.
+
+```{r}
+plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
+  geom_boxplot() + labs(x = "Input", y = "Prime Number Gap") 
+plot
+```
+
+This seems to confirm what we deduced from the previous graph. Having drawn the box plot for the whole dataset, we then divided the latter into 15 equaly distributed groups in terms of inputs values. Next, for each different group we drew a box plot similar to the one of the previous graph in order to confirm or reject hypothesis (1).
+
+```{r}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
+  geom_boxplot() + labs(x = "Input Group", y = "Prime Number Gap") 
+plot
+```
+
+As you can see, the value of the average seems to increase as we increase the group number, meaning that we go into groups with larger numbers, the gap average increases. As such, we can confirm hypothesis (1) as true.
+
+At that point, we started wondering if about the gap values followed a logarithmic distribution. We started by ploting the $log(Input)$ against the prime number gap.
+
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
-  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
+  geom_point() + labs(x = "log(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
 ```
 
-Pseudo-random distribution log(n) for hypothesis Random Number (2) (but with NextGap here and not PrimeGap)
+For redundancy and to validate our data generation we ploted $log(Input)$ against the next prime number gap of the current input.
+
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$NextGap)) + 
-  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
+  geom_point() + labs(x = "log(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
 ```
 
-Prime Number Theorem
+Finally, we did a density plot to have a visual notion of the distribution of the gaps while still maintaining $log(Input)$ as the $x$ axis.
+
+```{r}
+smoothScatter(log(prime$Input),prime$PrimeGap,
+             xlab="log(Input)",ylab="Prime Number Gap",main="Prime Number Gap Density")
+```
+
+The blue line in the first 2 graphs show the smooth local average of the different data points. Both graphs seem to indicate the logarithmic distribution to be true and the density plot seem also to indicate a more concetrated number of gap in the lower values. To confirm the information conveyed by the first 2 graphs, we drew a $4^{th}$ with the smooth conditional mean and the theoritical truth using the $\frac{log^2(x)}{log(x)-1}$ formula.
+
 ```{r}
 meanE <- mean(prime$PrimeGap)
 plot = ggplot(data= prime, aes(prime$ln2x/(prime$lnx - 1), prime$PrimeGap)) +
@@ -112,12 +126,7 @@ plot = ggplot(data= prime, aes(prime$ln2x/(prime$lnx - 1), prime$PrimeGap)) +
 plot
 ```
 
-Box Plot of overall average gap values
-```{r}
-plot = ggplot(data= prime, aes(prime$Input, prime$PrimeGap)) +
-  geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
-plot
-```
+As we excepted, the smooth conditional mean alligns perfectly with the theoritical truth, meaning that our hypothesis (2) is confirmed as well.
 
 Scatter Plot of correlation between consecutive gaps, for Hypothesis (3) (As the graph show not much correlation)
 ```{r}
@@ -292,6 +301,23 @@ plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
 plotHist
 ```
 
+```{r}
+correlation <- cor.test(x<-prime$PrimeGap, y<-prime$NextGap, method = c("pearson"))
+cor_graph <- ggplot(data = prime, aes(prime$PrimeGap, prime$NextGap)) + 
+    geom_point() + labs(x = "Current Gap", y = "Next Gap") +
+    geom_smooth(method = "lm")
+cor_graph + ggtitle("Correlation between Current Gap and Next Gap") +
+          annotate("text", x = 350, y = 450, label = paste("Correlation:", correlation$estimate))
+```
+
+```{r}
+smoothScatter(prime$PrimeGap,prime$NextGap,
+                xlab="Current Gap",ylab="Next Gap",main="Current Gap and Next Gap density")
+```
+
 ## References
 
-[^1]: <http://mathworld.wolfram.com/PrimeNumberTheorem.html>
+[^1]: <https://arxiv.org/abs/1603.03720>
+[^2]: Hardy, G. H. and Littlewood, J. E. "Some Problems of 'Partitio Numerorum.' III. On the Expression of a Number as a Sum of Primes." Acta Math. 44, 1-70, 1923.
+[^3]: <http://mathworld.wolfram.com/PrimeNumberTheorem.html>
+[^4]: Rabin, Michael O. (1980), "Probabilistic algorithm for testing primality", Journal of Number Theory, 12 (1): 128-138, doi:10.1016/0022-314X(80)90084-0
