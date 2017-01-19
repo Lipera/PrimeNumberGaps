@@ -111,6 +111,6 @@ plotHist
 Prime Number Theorem
 ```{r}
 plot = ggplot(data= prime, aes(1/prime$PrimeGap, prime$xOverlnx)) +
-  geom_point() + labs(x = "1/Prime Gap", y = "Input/ln(Input)") 
+  geom_point() + labs(x = "1 / Prime Gap", y = "Input / ln(Input)") 
 plot
 ```
