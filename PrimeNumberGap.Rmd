@@ -3,8 +3,8 @@ title: "Prime Number Gap Pattern"
 author: "Daniel Dos Santos Bossle, João Pedro Borges Pereira, Waqas Imtiaz"
 date: "January 19, 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -90,6 +90,7 @@ plot
 ```
 
 As you can see, the value of the average seems to increase as we increase the group number, meaning that as we go into groups with larger numbers, the gap average increases. As such, we can confirm hypothesis (1) as true.
+However, since the $x$ axis is proportional to the logarithm of the input value, we can see that the median and quartiles grow at a rate not linear in that logarithm. This goes heavily against Hypothesis (3), and so we can consider it to be very likely invalid.
 
 At that point, we started wondering if the gap values followed a logarithmic distribution. We started by ploting the $log(Input)$ against the prime number gap.
 
@@ -415,7 +416,11 @@ plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
 plotHist
 ```
 
+Important to notice that as the gap value grows larger, the latter has no longer any occurences for the smaller groups and are, hence, not displayed. We can observe that, for large enough inputs, the frequencies start decreasing. This is expected, and explained by the Hardy-Littlewood conjecture [^2]: as explained in the hypothesis (5), these frequencies are expected to become $\frac 1 {ln^2(x)}$. We can also note that, for larger gaps, the frequencies start low and have a build-up period before hitting their peak. The exact shape of this curve seems very interesting, but we did not find any theoretical results about it in our research. 
 
+## Conclusion and Future Work
+
+To sum up, we did an extensive analysis confirming 2 of our hypothesis and rejecting one. Important to mention that the $p-value$ for the correlation between consecutive gaps was $2.2*10^{-16}$, which is largely inferior to 0.005, meaning that we are almost 100% sure of our result. We made sure as well to generate enough data so that certainty of our results remains high. However, hypothesis (6), due to lack of time, was not explored and could be explored as future work as many other theories and conjectures not mentioned in this report. It would have been also interesting to run tests to validate our data mathematically, like the chi-squared test.
 
 ## References
 
