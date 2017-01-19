@@ -31,6 +31,10 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+## Motivation
+
+Prime numbers have been a mystery for centuries. Finding a pattern for these numbers has proven to be such a complex task, that it has become the base of nowadays cryptography. To encode the data, people use 2 very large prime numbers, multiplying each other and then executing the remaining operations necessary to encode. In order to decode, the hacker would need to find the original primes that forms the current number. However, no pattern has been found for prime numbers, making the task very difficult if the primes are relatively large. Nevertheless, a new pattern was discovered, which was shown to be related to the distribution of the differences between consecutive primes. These differences are called "prime gaps". The paper by Robert J. Lemke Oliver and Kannan Soundararajan demonstrates that the pattern is related to the Hardy-Littlewood conjecture, from 1923, which gives an approximation to that distribution.
+
 Box Plot for Hypothesis (1)
 
 ```{r}
