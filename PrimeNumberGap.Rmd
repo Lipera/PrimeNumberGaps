@@ -77,7 +77,10 @@ Prime Number Theorem
 ```{r}
 meanE <- mean(prime$PrimeGap)
 plot = ggplot(data= prime, aes(prime$ln2x/(prime$lnx - 1), prime$PrimeGap)) +
-  geom_point() + labs(x = "ln2(Prime) / (ln(Prime) -1)", y = "Prime Gap") + geom_smooth()
+  geom_point() + labs(x = "ln2(Prime) / (ln(Prime) -1)", y = "Prime Gap") + 
+  geom_smooth(aes(colour ="Smoothed conditional mean")) +
+  stat_function(fun = function(x)(x), aes(colour="y = x")) +
+  scale_colour_manual(name="Legend", values=c("blue", "red"))
 plot
 ```
 
@@ -226,7 +229,7 @@ Group 15
 ```{r}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
-primeAuxHist <- subset(primeAux, primeAux$group == 10)
+primeAuxHist <- subset(primeAux, primeAux$group == 15)
 meanE <- mean(primeAuxHist$PrimeGap)
 std <- sd(primeAuxHist$PrimeGap)
 plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
