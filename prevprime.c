@@ -144,9 +144,9 @@ void get_log_random(mpz_t n, int maxbits, gmp_randstate_t state) {
 }
 
 void main() {
-  int maxbits=100, numsamples=-1, i;
+  int maxbits=100, maxsamples=100000, numsamples=0;
 
-  mpz_t n, prev, next, gap, nextnext, nextgap;
+  mpz_t n, prev, next, gap, nextnext, nextgap, aux;
   gmp_randstate_t state;
   gmp_randinit_default(state);
   // TODO: gmp_randseed_ui(state, seed);
@@ -156,27 +156,32 @@ void main() {
   mpz_init(gap);
   mpz_init(nextnext);
   mpz_init(nextgap);
+  mpz_init(aux);
 
-  printf("Input,PreviousPrime,NextPrime,NextNextPrime,PrimeGap,NextGap");
-  for (i = 0; i != numsamples; ++i) {
+  printf("Input,PreviousPrime,NextPrime,NextNextPrime,PrimeGap,NextGap\n");
+  while (numsamples != maxsamples) {
     get_log_random(n, maxbits, state);
     prevprime(prev, n);
     mpz_nextprime(next, n);
-    mpz_nextprime(nextnext, next);
     mpz_sub(gap, next, prev);
-    mpz_sub(nextgap, nextnext, next);
 
-    mpz_out_str(stdout, 10, n);
-    printf(",");
-    mpz_out_str(stdout, 10, prev);
-    printf(",");
-    mpz_out_str(stdout, 10, next);
-    printf(",");
-    mpz_out_str(stdout, 10, nextnext);
-    printf(",");
-    mpz_out_str(stdout, 10, gap);
-    printf(",");
-    mpz_out_str(stdout, 10, nextgap);
-    printf("\n");
+    mpz_urandomm(aux, state, gap);
+    if (mpz_cmp_ui(aux, 1) <= 0) {
+      mpz_nextprime(nextnext, next);
+      mpz_sub(nextgap, nextnext, next);
+      mpz_out_str(stdout, 10, n);
+      printf(",");
+      mpz_out_str(stdout, 10, prev);
+      printf(",");
+      mpz_out_str(stdout, 10, next);
+      printf(",");
+      mpz_out_str(stdout, 10, nextnext);
+      printf(",");
+      mpz_out_str(stdout, 10, gap);
+      printf(",");
+      mpz_out_str(stdout, 10, nextgap);
+      printf("\n");
+      numsamples++;
+    }
   }
 }
