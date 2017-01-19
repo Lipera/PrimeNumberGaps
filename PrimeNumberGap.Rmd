@@ -79,6 +79,13 @@ lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) +
 lnPlot
 ```
 
+Pseudo-random distribution log(n) for hypothesis Random Number (2) (but with NextGap here and not PrimeGap)
+```{r}
+lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$NextGap)) + 
+  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
+lnPlot
+```
+
 Prime Number Theorem
 ```{r}
 meanE <- mean(prime$PrimeGap)
