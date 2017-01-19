@@ -31,6 +31,21 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+## Motivation
+
+Prime numbers have been a mystery for centuries. Finding a pattern for these numbers has proven to be such a complex task that it has become the base of modern cryptography. To encode the data, people use 2 very large prime numbers, multiplying each other and then executing the remaining operations necessary to encode. In order to decode, the hacker would need to find the original primes that form the current number. However, no pattern has been found for prime numbers, making the task very difficult if the primes are relatively large. Nevertheless, a new pattern was discovered, which was shown to be related to the distribution of the differences between consecutive primes. These differences are called "prime gaps". The paper by Robert J. Lemke Oliver and Kannan Soundararajan demonstrates that the pattern is related to the Hardy-Littlewood conjecture, from 1923, which gives an approximation to that distribution.
+
+Being a pseudo-random function, we thought it would be interesting to investigate this matter, analyzing with our own means while confirming or rejecting conjectures done by mathematicians. You can look at a pseudo-random function in 2 different ways:
+
+* You can consider it as a random function and try to analyze its distribution.
+* You can check why it is not random by looking for patterns.
+
+We adopted the first approach.
+
+Considering the Prime Number Theory [^1] and 
+
+##Generation of data
+
 Box Plot for Hypothesis (1)
 
 ```{r}
@@ -75,6 +90,13 @@ meanPlot
 Pseudo-random distribution log(n) for hypothesis Random Number (2)
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
+  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
+lnPlot
+```
+
+Pseudo-random distribution log(n) for hypothesis Random Number (2) (but with NextGap here and not PrimeGap)
+```{r}
+lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$NextGap)) + 
   geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
 ```
@@ -269,3 +291,7 @@ plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
       labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
 plotHist
 ```
+
+## References
+
+[^1]: <http://mathworld.wolfram.com/PrimeNumberTheorem.html>
