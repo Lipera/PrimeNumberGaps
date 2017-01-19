@@ -1,5 +1,7 @@
 ---
-title: "PrimeNumberGap"
+title: "Prime Number Gap Pattern"
+author: "Daniel Dos Santos Bossle, João Pedro Borges Pereira, Waqas Imtiaz"
+date: "January 19, 2017"
 output:
   html_document: default
   pdf_document: default
@@ -32,12 +34,17 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 Box Plot for Hypothesis (1)
 
 ```{r}
+library(ggplot2)
+library(reshape2)
+library(Hmisc)
+load(file="data/primeNumber.Rdata")
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
   geom_boxplot() + labs(x = "Random Number", y = "Prime Number Gap") 
 plot
 ```
+
 
 Density plot of the general distribution of the gaps between the prime numbers, usefull for hypothesis (2) since we have log(Random Number)
 ```{r}
@@ -68,8 +75,19 @@ meanPlot
 Pseudo-random distribution log(n) for hypothesis Random Number (2)
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
-  geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth(method = "lm")
+  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
+```
+
+Prime Number Theorem
+```{r}
+meanE <- mean(prime$PrimeGap)
+plot = ggplot(data= prime, aes(prime$ln2x/(prime$lnx - 1), prime$PrimeGap)) +
+  geom_point() + labs(x = "ln2(Prime) / (ln(Prime) -1)", y = "Prime Gap") + 
+  geom_smooth(aes(colour ="Smoothed conditional mean")) +
+  stat_function(fun = function(x)(x), aes(colour="y = x")) +
+  scale_colour_manual(name="Legend", values=c("blue", "red"))
+plot
 ```
 
 Box Plot of overall average gap values
@@ -88,6 +106,8 @@ lnPlot
 
 Histogram with distribution of different gaps
 ```{r}
+meanE <- mean(prime$PrimeGap)
+std <- sd(prime$PrimeGap)
 plotHist = ggplot(data = prime, aes(prime$PrimeGap)) +
   geom_bar(fill="white", colour="black") + 
       labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
@@ -107,10 +127,145 @@ plotHist = ggplot(data = prime, aes(prime$PrimeGap)) +
 plotHist
 ```
 
-
-Prime Number Theorem
+Group 1
 ```{r}
-plot = ggplot(data= prime, aes(1/prime$PrimeGap, prime$xOverlnx)) +
-  geom_point() + labs(x = "1 / Prime Gap", y = "Input / ln(Input)") 
-plot
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAuxHist <- subset(primeAux, primeAux$group == 1)
+meanE <- mean(primeAuxHist$PrimeGap)
+std <- sd(primeAuxHist$PrimeGap)
+plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(primeAuxHist$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
+
+Group 2
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAuxHist <- subset(primeAux, primeAux$group == 2)
+meanE <- mean(primeAuxHist$PrimeGap)
+std <- sd(primeAuxHist$PrimeGap)
+plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(primeAuxHist$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
+
+Group 6
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAuxHist <- subset(primeAux, primeAux$group == 6)
+meanE <- mean(primeAuxHist$PrimeGap)
+std <- sd(primeAuxHist$PrimeGap)
+plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(primeAuxHist$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
+
+Group 10
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAuxHist <- subset(primeAux, primeAux$group == 10)
+meanE <- mean(primeAuxHist$PrimeGap)
+std <- sd(primeAuxHist$PrimeGap)
+plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(primeAuxHist$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
+
+Group 15
+```{r, echo=FALSE}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAuxHist <- subset(primeAux, primeAux$group == 15)
+meanE <- mean(primeAuxHist$PrimeGap)
+std <- sd(primeAuxHist$PrimeGap)
+plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Prime Number Gap Value", y = "Number of Primes with the same Gap") +
+  geom_vline(aes(xintercept = meanE, colour = "mean")) + 
+  geom_vline(aes(xintercept = (meanE + std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = (meanE - std), colour = "std"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = median(primeAuxHist$PrimeGap), 
+                 colour = "median"), linetype = "dashed") + 
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.25), 
+                 colour = "quantile25"), linetype = "dashed") +
+  geom_vline(aes(xintercept = quantile(primeAuxHist$PrimeGap, 0.75), 
+                 colour = "quantile75"), linetype = "dashed") +
+  scale_colour_manual(name = "Legend", 
+                 breaks = c("mean", "std","median", "quantile25", "quantile75"), 
+                 values= c(mean = "red", std = "blue", median = "orange", 
+                           quantile25 = "green", quantile75 = "yellow"))
+plotHist
+```
+
+Evolution of a certain gap overtime (In this case the gap of value 2)
+
+```{r}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 1)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
 ```

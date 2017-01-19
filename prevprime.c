@@ -164,7 +164,7 @@ void main() {
     prevprime(prev, n);
     mpz_nextprime(next, n);
     mpz_sub(gap, next, prev);
-
+    // Accept with probability 2/gap, to correct the Waiting Paradox
     mpz_urandomm(aux, state, gap);
     if (mpz_cmp_ui(aux, 1) <= 0) {
       mpz_nextprime(nextnext, next);
