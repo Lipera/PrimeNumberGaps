@@ -1,5 +1,7 @@
 ---
-title: "PrimeNumberGap"
+title: "Prime Number Gap Pattern"
+author: "Daniel Dos Santos Bossle, João Pedro Borges Pereira, Waqas Imtiaz"
+date: "January 19, 2017"
 output:
   html_document: default
   pdf_document: default
@@ -32,6 +34,10 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 Box Plot for Hypothesis (1)
 
 ```{r}
+library(ggplot2)
+library(reshape2)
+library(Hmisc)
+load(file="data/primeNumber.Rdata")
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 plot = ggplot(data= primeAux, aes(factor(group), prime$PrimeGap)) +
@@ -69,7 +75,7 @@ meanPlot
 Pseudo-random distribution log(n) for hypothesis Random Number (2)
 ```{r}
 lnPlot <- ggplot(data= prime, aes(log(prime$Input), prime$PrimeGap)) + 
-  geom_point() + labs(x = "Random Number", y = "log(Prime Number Gap)") + geom_smooth(method = "lm")
+  geom_point() + labs(x = "ln(Input)", y = "Prime Number Gap") + geom_smooth(method = "lm")
 lnPlot
 ```
 
@@ -148,7 +154,7 @@ plotHist
 ```
 
 Group 2
-```{r}
+```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 primeAuxHist <- subset(primeAux, primeAux$group == 2)
@@ -174,7 +180,7 @@ plotHist
 ```
 
 Group 6
-```{r}
+```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 primeAuxHist <- subset(primeAux, primeAux$group == 6)
@@ -200,7 +206,7 @@ plotHist
 ```
 
 Group 10
-```{r}
+```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 primeAuxHist <- subset(primeAux, primeAux$group == 10)
@@ -226,7 +232,7 @@ plotHist
 ```
 
 Group 15
-```{r}
+```{r, echo=FALSE}
 primeAux <- prime
 primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
 primeAuxHist <- subset(primeAux, primeAux$group == 15)
@@ -251,6 +257,15 @@ plotHist = ggplot(data = primeAuxHist, aes(primeAuxHist$PrimeGap)) +
 plotHist
 ```
 
+Evolution of a certain gap overtime (In this case the gap of value 2)
 
-
-
+```{r}
+primeAux <- prime
+primeAux$group <- as.numeric(cut2(primeAux$Input, g=15))
+primeAux$groupGap <- as.numeric(cut2(primeAux$PrimeGap))
+primeAuxHist <- subset(primeAux, primeAux$groupGap == 1)
+plotHist = ggplot(data = primeAuxHist, aes(factor(primeAuxHist$group))) +
+  geom_bar(fill="white", colour="black") + 
+      labs(x = "Input group", y = "Count numbers with the gap of the corresponding group") 
+plotHist
+```
